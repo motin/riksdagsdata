@@ -1,0 +1,36 @@
+# Docker compose configuration for local development
+version: '3.3'
+services:
+
+  # Local MySQL database server to mimic a cloud database
+  localdb:
+    image: mysql:5.7.11
+    volumes:
+      - riksdagsdata-localdb-var-lib-mysql-persistent:/var/lib/mysql:rw
+      - ./stack/scripts/:/stack/scripts:ro
+    ports:
+      - "53306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "local-mysql-pass"
+    command: "/stack/scripts/localdb-start.sh"
+
+  # A container to run worker/administration commands locally - start a shell by running stack/shell.sh
+  shell:
+    image: neam/dna-project-base-debian-php:1.0.0-php7.2
+    #links:
+    #  - localdb
+    volumes:
+      - ./stack/scripts/:/stack/scripts:ro
+      - .:/app:rw
+      - ../.git:/.git
+      - ~/.composer:/root/.composer
+      - ~/.gitconfig:/root/.gitconfig
+      - ~/.ssh:/root/.ssh:ro
+    working_dir: '/app'
+    env_file:
+     - .env
+    command: "/stack/scripts/shell-start.sh"
+
+volumes:
+  riksdagsdata-localdb-var-lib-mysql-persistent:
+    external: true
