@@ -359,3 +359,16 @@ start datetime,
 slut datetime,
 mandatperiod varchar(20)
 );
+
+ALTER TABLE `dokument`
+ADD INDEX `hangar_id` (`hangar_id` ASC);
+
+ALTER TABLE `dokutskottsforslag`
+ADD INDEX `hangar_id` (`hangar_id` ASC),
+ADD INDEX `punkt_and_beslutstyp` (`punkt` ASC, `beslutstyp` ASC),
+ADD INDEX `votering_id` (`votering_id` ASC);
+
+ALTER TABLE `votering`
+ADD COLUMN `id` BIGINT(20) NOT NULL AUTO_INCREMENT FIRST,
+ADD INDEX `votering_id` (`votering_id` ASC),
+ADD PRIMARY KEY (`id`);
